@@ -26,21 +26,21 @@ type Router interface {
 	Route(*gin.Engine)
 }
 
-type option func(*http.Server)
+type Option func(*http.Server)
 
-func NewReadTimeoutOption(timeout time.Duration) option {
+func NewReadTimeoutOption(timeout time.Duration) Option {
 	return func(srv *http.Server) {
 		srv.ReadTimeout = timeout
 	}
 }
 
 var (
-	DefaultOptions = []option{
+	DefaultOptions = []Option{
 		NewReadTimeoutOption(600 * time.Second),
 	}
 )
 
-func NewHttpServer(listen string, router Router, options ...option) IServer {
+func NewHttpServer(listen string, router Router, options ...Option) IServer {
 	engine := gin.New()
 	router.Route(engine)
 
@@ -57,7 +57,8 @@ func NewHttpServer(listen string, router Router, options ...option) IServer {
 	}
 
 	return &httpServer{
-		srv: srv,
+		srv:     srv,
+		sigChan: make(chan os.Signal),
 	}
 }
 
