@@ -10,3 +10,7 @@ func main() {
 	app := server.NewServer("", service.NewService(dao.NewAccount(nil)))
 	app.Start()
 }
+
+func loadConfig() {
+
+}
